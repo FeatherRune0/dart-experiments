@@ -17,10 +17,6 @@ typedef brotli_decoder_decompress_nt = Int32 Function(
 
 class BrotliOneshotDecoder 
 {
-  // enum BrotliDecoderResult
-  static int RESULT_ERROR = 0; // Decoding error
-  static int RESULT_SUCCESS = 1; // Decoding success
-
   int Function() version;
   int Function(
     int encoded_size,

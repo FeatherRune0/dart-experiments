@@ -1,12 +1,9 @@
 import 'package:ffi/ffi.dart'; // needed for utf-8 arrays and manual pointer allocations
 import 'dart:ffi';
 
+import 'common/types.dart';
 import 'encoder/oneshot_encoder.dart';
 import 'decoder/oneshot_decoder.dart';
-
-// BROTLI_BOOL
-int BROTLI_FALSE = 0;
-int BROTLI_TRUE = 1;
 
 main() {
   var input_string = "Hello Brotli!";
@@ -27,13 +24,13 @@ main() {
   final Pointer<Uint8> encoded_buffer = allocate<Uint8>(count: encoded_size.value);
 
   int result = encoder.compress(
-    11, 22, BrotliOneshotEncoder.MODE_TEXT,
+    11, 22, BrotliEncoderMode.BROTLI_MODE_TEXT,
     Utf8.strlen(input_bytes) + 1, input_buffer,
     encoded_size, encoded_buffer
   );
 
   print("Encoding: ${input_string}");
-  print("BrotliEncoderCompress returned ${result == 0 ? "BROTLI_FALSE" : "BROTLI_TRUE"}");
+  print("BrotliEncoderCompress returned ${result == BROTLI_FALSE ? "BROTLI_FALSE" : "BROTLI_TRUE"}");
   print("Encoded size is ${encoded_size.value}");
   String r = "";
   for (var i = 0; i < encoded_size.value; i++) {
@@ -59,7 +56,7 @@ main() {
     decoded_size,
     decoded_buffer
   );
-  print("BrotliDecoderDecompress returned ${result == BrotliOneshotDecoder.RESULT_ERROR ? "DECODER_ERROR" : "DECODER_SUCCESS"}");
+  print("BrotliDecoderDecompress returned ${result == BrotliDecoderResult.BROTLI_DECODER_RESULT_ERROR ? "DECODER_ERROR" : "DECODER_SUCCESS"}");
   print("Decoded size is ${decoded_size.value}");
   
   print("Result: " + String.fromCharCodes(decoded_buffer.asTypedList(decoded_size.value)));

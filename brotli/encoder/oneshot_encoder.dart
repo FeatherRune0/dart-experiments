@@ -17,11 +17,6 @@ typedef brotli_encoder_compress_nt = Int32 Function(
 
 class BrotliOneshotEncoder
 {
-  // enum BrotliEncoderMode
-  static int MODE_GENERIC = 0; // Default mode, compressor does not know anything
-  static int MODE_TEXT = 1; // for UTF-8 input
-  static int MODE_FONT = 2; // for WOFF 2.0
-
   int Function() version;
   int Function(
     int quality, int lgwin, int mode,
