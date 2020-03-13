@@ -1,0 +1,4 @@
+name: ffi_test
+
+dependencies:
+  ffi: ^0.1.3
