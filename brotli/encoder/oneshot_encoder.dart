@@ -15,9 +15,13 @@ typedef brotli_encoder_compress_nt = Int32 Function(
   Pointer<Uint8>
 );
 
+// BROTLI_ENC_API size_t BrotliEncoderMaxCompressedSize(size_t input_size);
+typedef brotli_encoder_max_compressed_size_nt = Int32 Function(Int32);
+
 class BrotliOneshotEncoder
 {
   int Function() _version;
+  int Function(int) _max_compressed_size;
   int Function(
     int, int, int,
     int, Pointer<Uint8>,
@@ -28,6 +32,9 @@ class BrotliOneshotEncoder
     _version = dynamicLibrary
       .lookup<NativeFunction<brotli_encoder_version_nt>>('BrotliEncoderVersion')
       .asFunction();
+    _max_compressed_size = dynamicLibrary
+      .lookup<NativeFunction<brotli_encoder_max_compressed_size_nt>>('BrotliEncoderMaxCompressedSize')
+      .asFunction();
     _compress = dynamicLibrary
       .lookup<NativeFunction<brotli_encoder_compress_nt>>('BrotliEncoderCompress')
       .asFunction();
@@ -35,6 +42,15 @@ class BrotliOneshotEncoder
 
   /// Gets the version of the library
   int version() => _version();
+
+  /// Calculates the output size bound for the given [input_size].
+  /// 
+  /// Result is only valid if quality is at least 2 and, in
+  /// case BrotliEncoderCompressStream was used, no flushes
+  /// (BROTLI_OPERATION_FLUSH) were performed.
+  /// 
+  /// Returns 0 if result does not fit size_t
+  int max_compressed_size(int input_size) => _max_compressed_size(input_size);
 
   /// Performs one-shot memory-to-memory compression.
   /// 
