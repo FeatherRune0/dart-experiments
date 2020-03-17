@@ -4,8 +4,8 @@ import 'package:ffi/ffi.dart'; // needed for utf-8 arrays and manual pointer all
 import 'dart:ffi';
 
 import 'common/types.dart';
-import 'encoder/oneshot_encoder.dart';
-import 'decoder/oneshot_decoder.dart';
+import 'encoder/encoder.dart';
+import 'decoder/decoder.dart';
 
 main() {
   print("Enter a string");
@@ -16,11 +16,11 @@ main() {
   // ENCODING
 
   final encoder_dylib = DynamicLibrary.open(encoder_path);
-  final encoder = new BrotliOneshotEncoder(encoder_dylib);
-  print("Loaded ${encoder_path} version: 0x${encoder.version().toRadixString(16)}");
+  final encoder = new BrotliEncoder(encoder_dylib);
+  print("Loaded ${encoder_path} version: 0x${encoder.utility.version().toRadixString(16)}");
 
   var input_bytes = Utf8.toUtf8(input_string);
-  var buffer_size = encoder.max_compressed_size(Utf8.strlen(input_bytes));
+  var buffer_size = encoder.utility.max_compressed_size(Utf8.strlen(input_bytes));
   final Pointer<Uint8> input_buffer = input_bytes.cast();
   final Pointer<Int32> encoded_size = allocate();
   encoded_size.value = buffer_size;
@@ -46,8 +46,8 @@ main() {
   // DECODING
 
   final decoder_dylib = DynamicLibrary.open(decoder_path);
-  final decoder = BrotliOneshotDecoder(decoder_dylib);
-  print("Loaded ${decoder_path} version: 0x${decoder.version().toRadixString(16)}");
+  final decoder = BrotliDecoder(decoder_dylib);
+  print("Loaded ${decoder_path} version: 0x${decoder.utility.version().toRadixString(16)}");
 
   final Pointer<Int32> decoded_size = allocate();
   decoded_size.value = buffer_size;
