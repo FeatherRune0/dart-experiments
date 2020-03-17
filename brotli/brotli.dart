@@ -13,13 +13,21 @@ main() {
   var encoder_path = 'lib/libbrotlienc.so';
   var decoder_path = 'lib/libbrotlidec.so';
 
-  // ENCODING
-
   final encoder_dylib = DynamicLibrary.open(encoder_path);
   final encoder = new BrotliEncoder(encoder_dylib);
   print("Loaded ${encoder_path} version: 0x${encoder.utility.version().toRadixString(16)}");
+  
+  final decoder_dylib = DynamicLibrary.open(decoder_path);
+  final decoder = BrotliDecoder(decoder_dylib);
+  print("Loaded ${decoder_path} version: 0x${decoder.utility.version().toRadixString(16)}");
 
-  var input_bytes = Utf8.toUtf8(input_string);
+  singleshot(input_string, encoder, decoder);
+}
+
+void singleshot(String input, BrotliEncoder encoder, BrotliDecoder decoder) {
+  // ENCODING
+
+  var input_bytes = Utf8.toUtf8(input);
   var buffer_size = encoder.utility.max_compressed_size(Utf8.strlen(input_bytes));
   final Pointer<Uint8> input_buffer = input_bytes.cast();
   final Pointer<Int32> encoded_size = allocate();
@@ -33,7 +41,7 @@ main() {
     encoded_size, encoded_buffer
   );
 
-  print("Encoding: ${input_string}");
+  print("Encoding: ${input}");
   print("BrotliEncoderCompress returned ${result == BROTLI_FALSE ? "BROTLI_FALSE" : "BROTLI_TRUE"}");
   print("Encoded size is ${encoded_size.value}");
   String r = "";
@@ -44,10 +52,6 @@ main() {
 
   print("");
   // DECODING
-
-  final decoder_dylib = DynamicLibrary.open(decoder_path);
-  final decoder = BrotliDecoder(decoder_dylib);
-  print("Loaded ${decoder_path} version: 0x${decoder.utility.version().toRadixString(16)}");
 
   final Pointer<Int32> decoded_size = allocate();
   decoded_size.value = buffer_size;
