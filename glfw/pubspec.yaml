@@ -1,0 +1,4 @@
+name: glfw_example
+
+dependencies:
+  ffi: ^0.1.3
