@@ -39,3 +39,21 @@ typedef glfwGetFramebufferSize_nt = Void Function(Pointer<GLFWwindow>, Pointer<I
 
 // GLFWAPI void glfwPollEvents(void);
 typedef glfwPollEvents_nt = Void Function();
+
+// GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* window, GLFWkeyfun callback);
+typedef glfwSetKeyCallback_nt = Pointer<NativeFunction<GLFWkeyfun>> Function(
+  Pointer<GLFWwindow>,
+  Pointer<NativeFunction<GLFWkeyfun>>
+);
+
+// GLFWAPI void glfwSetWindowShouldClose(GLFWwindow* window, int value);
+typedef glfwSetWindowShouldClose_nt = Void Function(
+  Pointer<GLFWwindow>,
+  Int32
+);
+
+// GLFWAPI void glfwDestroyWindow(GLFWwindow* window);
+typedef glfwDestroyWindow_nt = Void Function(Pointer<GLFWwindow>);
+
+// GLFWAPI double glfwGetTime(void);
+typedef glfwGetTime_nt = Double Function();

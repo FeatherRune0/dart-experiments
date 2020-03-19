@@ -27,6 +27,16 @@ class GLFW
     Pointer<Int32>, Pointer<Int32>
   ) _glfwGetFramebufferSize;
   void Function() _glfwPollEvents;
+  Pointer<NativeFunction<GLFWkeyfun>> Function(
+    Pointer<GLFWwindow>,
+    Pointer<NativeFunction<GLFWkeyfun>>
+  ) _glfwSetKeyCallback;
+  void Function(
+    Pointer<GLFWwindow>,
+    int
+  ) _glfwSetWindowShouldClose;
+  void Function(Pointer<GLFWwindow>) _glfwDestroyWindow;
+  double Function() _glfwGetTime;
 
   GLFW(DynamicLibrary dynamicLibrary) {
     _glfwInit = dynamicLibrary
@@ -61,6 +71,18 @@ class GLFW
       .asFunction();
     _glfwPollEvents = dynamicLibrary
       .lookup<NativeFunction<glfwPollEvents_nt>>('glfwPollEvents')
+      .asFunction();
+    _glfwSetKeyCallback = dynamicLibrary
+      .lookup<NativeFunction<glfwSetKeyCallback_nt>>('glfwSetKeyCallback')
+      .asFunction();
+    _glfwSetWindowShouldClose = dynamicLibrary
+      .lookup<NativeFunction<glfwSetWindowShouldClose_nt>>('glfwSetWindowShouldClose')
+      .asFunction();
+    _glfwDestroyWindow = dynamicLibrary
+      .lookup<NativeFunction<glfwDestroyWindow_nt>>('glfwDestroyWindow')
+      .asFunction();
+    _glfwGetTime = dynamicLibrary
+      .lookup<NativeFunction<glfwGetTime_nt>>('glfwGetTime')
       .asFunction();
   }
 
@@ -178,4 +200,43 @@ class GLFW
 
   /// Processes all pending events.
   void PollEvents() => _glfwPollEvents();
+
+  /// Sets the key callback.
+  /// 
+  /// [window]   : The window whose callback to set.
+  /// [callback] : The new key callback, or `NULL` to remove the currently
+  ///              set callback.
+  /// Returns the previously set callback, or `NULL` if no callback was set or the
+  ///         library had not been [initialized](@ref intro_init).
+  /// 
+  /// Note: This function must only be called from the main thread.
+  Pointer<NativeFunction<GLFWkeyfun>> SetKeyCallback(
+    Pointer<GLFWwindow> window,
+    Pointer<NativeFunction<GLFWkeyfun>> callback
+  ) => _glfwSetKeyCallback(window, callback);
+
+  /// Sets the close flag of the specified window.
+  /// 
+  /// [window] : The window whose flag to change.
+  /// [value]  : The new value.
+  void SetWindowShouldClose(
+    Pointer<GLFWwindow> window,
+    int value
+  ) => _glfwSetWindowShouldClose(window, value);
+
+  /// Destroys the specified window and its context.
+  /// 
+  /// [window] : The window to destroy.
+  /// 
+  /// Note: This function must only be called from the main thread.
+  void DestroyWindow(Pointer<GLFWwindow> window) => _glfwDestroyWindow(window);
+
+  /// Returns the current GLFW time, in seconds.
+  /// 
+  /// Unless the time has been set using [glfwSetTime] it measures
+  /// time elapsed since GLFW was initialized.
+  /// 
+  /// Returns : The current time, in seconds, or zero if an
+  ///           error occurred.
+  double GetTime() => _glfwGetTime();
 }

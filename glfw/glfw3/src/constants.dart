@@ -3,6 +3,13 @@
 int GLFW_TRUE = 1;
 int GLFW_FALSE = 0;
 
+// Context hints
+/// Context client API major version hint and attribute.
+int GLFW_CONTEXT_VERSION_MAJOR = 0x00022002;
+/// Context client API minor version hint and attribute.
+int GLFW_CONTEXT_VERSION_MINOR = 0x00022003;
+
+// Window hints
 /// Input focus window hint and attribute
 int GLFW_FOCUSED = 0x00020001;
 /// Window iconification window attribute
@@ -27,3 +34,11 @@ int GLFW_TRANSPARENT_FRAMEBUFFER = 0x0002000A;
 int GLFW_HOVERED = 0x0002000B;
 /// Input focus on calling show window hint and attribute
 int GLFW_FOCUS_ON_SHOW = 0x0002000C;
+
+// Key constants
+int GLFW_KEY_ESCAPE = 256;
+
+// Key and button activities
+int GLFW_RELEASE = 0;
+int GLFW_PRESS = 1;
+int GLFW_REPEAT = 2;
